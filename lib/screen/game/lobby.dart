@@ -14,14 +14,36 @@ class Lobby extends StatefulWidget {
 
 class _LobbyState extends State<Lobby> {
 
-  var myRecord;
+  DateTime? currentBackPressTime;
 
-  // void initRecord() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   var rec = prefs.getInt('rc_record');
-  //
-  //
-  // }
+  Future<bool> onWillPop(){
+    DateTime now = DateTime.now();
+    if(currentBackPressTime == null ||
+      now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
+      currentBackPressTime = now;
+      final _msg ="게임을 종료하실 수 있습니다.";
+      final snackBar = SnackBar(content: Text(_msg));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      initialRecentRecord();
+      return Future.value(false);
+    }
+    return Future.value(true);
+
+
+  }
+  var rankNum = [0, 1, 2];
+  var myRecord;
+  var nick;
+
+
+
+
+  void initRecord() async {
+    final prefs = await SharedPreferences.getInstance();
+    nick = prefs.getString('nick');
+
+
+  }
   var recentRecord;
 
   void initialRecentRecord() async{
@@ -68,8 +90,10 @@ class _LobbyState extends State<Lobby> {
 }
   }
 
-  var rcData;
-
+  List<dynamic>? rcData = List.filled(3, null);
+  // List<dynamic>? rcData;
+  // List rcData = List<String>.filled(3, '');
+  // var rcData = [null,null,null];
 
   void getRecordHttp() async {
     print('start game');
@@ -84,8 +108,25 @@ class _LobbyState extends State<Lobby> {
 
         final res2 = await dio.get("/api/record/level1/total");
 
+
         if(res2 != []) {
-          rcData = res2.data;
+          var data = res2.data;
+          var totalRank = data;
+          // print('totalRank ${data.length}');
+          // print('rcData1 ${rcData![0]}');
+              // res2.data;
+            for(int i = 0; i<data.length; i++){
+              // print('rcData3 ${rcData![0]}');
+              rcData![i] = data[0];
+              // print('rcData4 ${rcData}');
+              // print('rcData i ${i}');
+            }
+
+          // print('rcData2 ${rcData![0]}');
+
+
+          print('rankNum ${rankNum}');
+
         }
         // print('record total rank ${rcData[1].values.toList()[0]}');
 
@@ -136,7 +177,7 @@ class _LobbyState extends State<Lobby> {
   @override
   void initState() {
     super.initState();
-    // initRecord();
+    initRecord();
     getMyRank();
     getUserRecordHttp();
     getRecordHttp();
@@ -164,13 +205,14 @@ class _LobbyState extends State<Lobby> {
   //   }
   // }
 
-  List<int> rankNum = [0,1,2];
 
 
   final Future<String> _calculation = Future<String>.delayed(
     const Duration(seconds: 1),
         () => 'Data Loaded',
   );
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -181,11 +223,14 @@ class _LobbyState extends State<Lobby> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              child: Text(
-                '랭킹 Top3',
-                style: TextStyle(
-                  fontSize: 55.0
+            WillPopScope(
+              onWillPop: onWillPop,
+              child: Container(
+                child: Text(
+                  '랭킹 Top3',
+                  style: TextStyle(
+                    fontSize: 55.0
+                  ),
                 ),
               ),
             ),
@@ -218,14 +263,14 @@ class _LobbyState extends State<Lobby> {
                                     List<Widget> children;
                                     if (snapshot.hasData) {
                                       children = <Widget>[
-                                    Text('${rcData[el].values
-                                        .toList()[1]} : ${rcData[el].values
-                                        .toList()[0] ~/ 100}.${'${ rcData[el]
+                                    Text('${ rcData![el] == null ? "?" : rcData![el].values
+                                        .toList()[1]} : ${ rcData![el] == null ? 0 : rcData![el].values
+                                        .toList()[0] ~/ 100}.${rcData![el] == null? 0 :'${ rcData![el]
                                         .values.toList()[0] % 100}'.padLeft(
                                     2, '0')} 초',
-                                    style: TextStyle(
-                                    fontSize: 20.0
-                                    ),
+                                      style: TextStyle(
+                                      fontSize: 20.0
+                                      ),
                                     ),
                                       ];
                                     } else if (snapshot.hasError) {
@@ -283,7 +328,7 @@ class _LobbyState extends State<Lobby> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 15.0),
                           child: Text(
-                          '나의 최고기록 ${myRecord!} 초'
+                          '"${nick}" 님의 최고기록 ${myRecord == null ? 0 : myRecord} 초'
                             ,
                           style: TextStyle(
                           fontSize: 25.0
@@ -293,7 +338,7 @@ class _LobbyState extends State<Lobby> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 15.0),
                           child: Text(
-                            '현재 기록 ${recentRecord == null ? 0.00 : recentRecord!} 초'
+                            '"${nick}" 님의 현재 기록 ${recentRecord == null ? 0.00 : recentRecord!} 초'
                             ,
                             style: TextStyle(
                                 fontSize: 25.0
@@ -301,7 +346,7 @@ class _LobbyState extends State<Lobby> {
                           ),
                         ),
                         Text(
-                          '현재 순위 ${myRank['count(*)']} 위'
+                          '"${nick}" 님의 현재 순위 ${myRank['count(*)'] == null ? 0 : (myRank['count(*)']+1)} 위'
                           ,
                           style: TextStyle(
                               fontSize: 25.0

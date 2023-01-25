@@ -287,14 +287,15 @@ class _TimeCheckState extends State<TimeCheck> {
             children:
             widget.gameCount.map((num) =>
                 Container(
-                    width: 33,
+                    alignment: Alignment.center,
+                    width: 28,
                     margin: EdgeInsets.all(4),
                     padding: EdgeInsets.all(4),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.orangeAccent
                     ),
-                    child: Text('${num}', style:TextStyle(fontSize: 40, color: Colors.white))
+                    child: Text('${num}', style:TextStyle(fontSize: 30, color: Colors.white))
                 ),
             ).toList(),
           ),

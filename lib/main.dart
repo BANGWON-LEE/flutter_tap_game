@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:practice/screen/about_state.dart';
+import 'package:practice/screen/tapGame';
 import 'package:practice/screen/album.dart';
 import 'package:practice/screen/game/lobby.dart';
 import 'package:practice/screen/game/login.dart';

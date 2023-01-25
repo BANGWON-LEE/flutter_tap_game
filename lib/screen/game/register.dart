@@ -69,7 +69,7 @@ class _RegisterState extends State<Register> {
         idController.clear();
         pwController.clear();
         nickController.clear();
-        Navigator.pushNamed(context, '/');
+        Navigator.popAndPushNamed(context, '/');
       }
     }catch(e){
       _showMyDialog();
