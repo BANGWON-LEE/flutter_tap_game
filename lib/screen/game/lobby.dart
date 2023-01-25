@@ -19,7 +19,7 @@ class _LobbyState extends State<Lobby> {
   Future<bool> onWillPop(){
     DateTime now = DateTime.now();
     if(currentBackPressTime == null ||
-      now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
+        now.difference(currentBackPressTime!) > Duration(seconds: 2)) {
       currentBackPressTime = now;
       final _msg ="게임을 종료하실 수 있습니다.";
       final snackBar = SnackBar(content: Text(_msg));
@@ -70,24 +70,24 @@ class _LobbyState extends State<Lobby> {
     print('recent Record2 ${recentRecord}');
 
     Dio dio = new Dio(options);
-  try {
-    final res = await dio.post(
-        "/api/user/record", data: {"mem_userId": mem_userId});
-    print('response ${res.data[0]}');
-    var userArray = res.data[0];
-    if(res == []){
-      print('아직 입니다.');
-    } else {
-      print('저장합니다.');
-      prefs.setInt('rc_record', userArray['rc_record']);
-      var sec = userArray['rc_record']! ~/ 100;
-      var hundredth = '${userArray['rc_record'] % 100}'.padLeft(2, '0');
-      myRecord = '${sec}.${hundredth}';
+    try {
+      final res = await dio.post(
+          "/api/user/record", data: {"mem_userId": mem_userId});
+      print('response ${res.data[0]}');
+      var userArray = res.data[0];
+      if(res == []){
+        print('아직 입니다.');
+      } else {
+        print('저장합니다.');
+        prefs.setInt('rc_record', userArray['rc_record']);
+        var sec = userArray['rc_record']! ~/ 100;
+        var hundredth = '${userArray['rc_record'] % 100}'.padLeft(2, '0');
+        myRecord = '${sec}.${hundredth}';
 
+      }
+    } catch(e){
+      await dio.post("/api/register/level1", data: {"mem_userId": mem_userId});
     }
-  } catch(e){
-    await dio.post("/api/register/level1", data: {"mem_userId": mem_userId});
-}
   }
 
   List<dynamic>? rcData = List.filled(3, null);
@@ -104,35 +104,35 @@ class _LobbyState extends State<Lobby> {
     );
     Dio dio = new Dio(options);
 
-      try {
+    try {
 
-        final res2 = await dio.get("/api/record/level1/total");
-
-
-        if(res2 != []) {
-          var data = res2.data;
-          var totalRank = data;
-          // print('totalRank ${data.length}');
-          // print('rcData1 ${rcData![0]}');
-              // res2.data;
-            for(int i = 0; i<data.length; i++){
-              // print('rcData3 ${rcData![0]}');
-              rcData![i] = data[0];
-              // print('rcData4 ${rcData}');
-              // print('rcData i ${i}');
-            }
-
-          // print('rcData2 ${rcData![0]}');
+      final res2 = await dio.get("/api/record/level1/total");
 
 
-          print('rankNum ${rankNum}');
-
+      if(res2 != []) {
+        var data = res2.data;
+        var totalRank = data;
+        // print('totalRank ${data.length}');
+        // print('rcData1 ${rcData![0]}');
+        // res2.data;
+        for(int i = 0; i<data.length; i++){
+          // print('rcData3 ${rcData![0]}');
+          rcData![i] = data[0];
+          // print('rcData4 ${rcData}');
+          // print('rcData i ${i}');
         }
-        // print('record total rank ${rcData[1].values.toList()[0]}');
 
-      } catch (e) {
-        // _showMyDialog();
+        // print('rcData2 ${rcData![0]}');
+
+
+        print('rankNum ${rankNum}');
+
       }
+      // print('record total rank ${rcData[1].values.toList()[0]}');
+
+    } catch (e) {
+      // _showMyDialog();
+    }
   }
 
   var myRank;
@@ -229,91 +229,91 @@ class _LobbyState extends State<Lobby> {
                 child: Text(
                   '랭킹 Top3',
                   style: TextStyle(
-                    fontSize: 55.0
+                      fontSize: 55.0
                   ),
                 ),
               ),
             ),
             Container(
               child:
-                Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  // crossAxisAlignment: CrossAxisAlignment.center,
-                  children:
-                  rankNum.map((el) =>
+              Column(
+                // mainAxisAlignment: MainAxisAlignment.center,
+                // crossAxisAlignment: CrossAxisAlignment.center,
+                children:
+                rankNum.map((el) =>
                     Container(
                       child:
-                        Padding(
-                          padding: const EdgeInsets.only(top:20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                      Padding(
+                        padding: const EdgeInsets.only(top:20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
 
-                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 1.0),
-                                child:  Image.asset('asset/img/crown_${el}.png',
-                                  width: 30,
-                                ),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 1.0),
+                              child:  Image.asset('asset/img/crown_${el}.png',
+                                width: 30,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 15),
-                                child: FutureBuilder<String>(
-                                  future: _calculation, // a previously-obtained Future<String> or null
-                                  builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                                    List<Widget> children;
-                                    if (snapshot.hasData) {
-                                      children = <Widget>[
-                                    Text('${ rcData![el] == null ? "?" : rcData![el].values
-                                        .toList()[1]} : ${ rcData![el] == null ? 0 : rcData![el].values
-                                        .toList()[0] ~/ 100}.${rcData![el] == null? 0 :'${ rcData![el]
-                                        .values.toList()[0] % 100}'.padLeft(
-                                    2, '0')} 초',
-                                      style: TextStyle(
-                                      fontSize: 20.0
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                              child: FutureBuilder<String>(
+                                future: _calculation, // a previously-obtained Future<String> or null
+                                builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                                  List<Widget> children;
+                                  if (snapshot.hasData) {
+                                    children = <Widget>[
+                                      Text('${ rcData![el] == null ? "?" : rcData![el].values
+                                          .toList()[1]} : ${ rcData![el] == null ? 0 : rcData![el].values
+                                          .toList()[0] ~/ 100}.${rcData![el] == null? 0 :'${ rcData![el]
+                                          .values.toList()[0] % 100}'.padLeft(
+                                          2, '0')} 초',
+                                        style: TextStyle(
+                                            fontSize: 20.0
+                                        ),
                                       ),
+                                    ];
+                                  } else if (snapshot.hasError) {
+                                    children = <Widget>[
+                                      const Icon(
+                                        Icons.error_outline,
+                                        color: Colors.red,
+                                        size: 60,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 16),
+                                        child: Text('Error: ${snapshot.error}'),
+                                      ),
+                                    ];
+                                  } else {
+                                    children = const <Widget>[
+                                      SizedBox(
+                                        width: 15,
+                                        height: 15,
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                      // Padding(
+                                      //   padding: EdgeInsets.only(top: 16),
+                                      //   child: Text('랭킹을 불러오고 있습니다.'),
+                                      // ),
+                                    ];
+                                  }
+                                  return Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: children,
                                     ),
-                                      ];
-                                    } else if (snapshot.hasError) {
-                                      children = <Widget>[
-                                        const Icon(
-                                          Icons.error_outline,
-                                          color: Colors.red,
-                                          size: 60,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(top: 16),
-                                          child: Text('Error: ${snapshot.error}'),
-                                        ),
-                                      ];
-                                    } else {
-                                      children = const <Widget>[
-                                        SizedBox(
-                                          width: 15,
-                                          height: 15,
-                                          child: CircularProgressIndicator(),
-                                        ),
-                                        // Padding(
-                                        //   padding: EdgeInsets.only(top: 16),
-                                        //   child: Text('랭킹을 불러오고 있습니다.'),
-                                        // ),
-                                      ];
-                                    }
-                                    return Center(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: children,
-                                      ),
-                                    );
-                                  },
-                                ),
+                                  );
+                                },
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
+                      ),
                     ),
-                  ).toList(),
-                ),
+                ).toList(),
               ),
+            ),
             Padding(
               padding: const EdgeInsets.only(top:25.0),
               child: Container(
@@ -323,37 +323,37 @@ class _LobbyState extends State<Lobby> {
                     List<Widget> children;
                     if (snapshot.hasData) {
                       children = <Widget>[
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 15.0),
-                          child: Text(
-                          '"${nick}" 님의 최고기록 ${myRecord == null ? 0 : myRecord} 초'
-                            ,
-                          style: TextStyle(
-                          fontSize: 25.0
-                          ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 15.0),
-                          child: Text(
-                            '"${nick}" 님의 현재 기록 ${recentRecord == null ? 0.00 : recentRecord!} 초'
-                            ,
-                            style: TextStyle(
-                                fontSize: 25.0
+                        Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 15.0),
+                              child: Text(
+                                '"${nick}" 님의 최고기록 ${myRecord == null ? 0 : myRecord} 초'
+                                ,
+                                style: TextStyle(
+                                    fontSize: 25.0
+                                ),
+                              ),
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 15.0),
+                              child: Text(
+                                '"${nick}" 님의 현재 기록 ${recentRecord == null ? 0.00 : recentRecord!} 초'
+                                ,
+                                style: TextStyle(
+                                    fontSize: 25.0
+                                ),
+                              ),
+                            ),
+                            Text(
+                              '"${nick}" 님의 현재 순위 ${myRank['count(*)'] == null ? 0 : (myRank['count(*)']+1)} 위'
+                              ,
+                              style: TextStyle(
+                                  fontSize: 25.0
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          '"${nick}" 님의 현재 순위 ${myRank['count(*)'] == null ? 0 : (myRank['count(*)']+1)} 위'
-                          ,
-                          style: TextStyle(
-                              fontSize: 25.0
-                          ),
-                        ),
-                      ],
-                    ),
                       ];
                     } else if (snapshot.hasError) {
                       children = <Widget>[
@@ -405,10 +405,10 @@ class _LobbyState extends State<Lobby> {
                 ),
               ),
             )
-            ],
-          ),
+          ],
         ),
-      );
-    }
+      ),
+    );
   }
+}
 
