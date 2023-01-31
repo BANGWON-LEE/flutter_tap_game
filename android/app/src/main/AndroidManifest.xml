@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
    <application
         android:label="tapGame"
-        android:name="${applicationName}"
+        android:name="androidx.multidex.MultiDexApplication"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
         <activity
@@ -33,5 +33,8 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+       <meta-data
+           android:name="com.google.android.gms.ads.APPLICATION_ID"
+           android:value="ca-app-pub-1752739692981009~8785947239"/>
     </application>
 </manifest>

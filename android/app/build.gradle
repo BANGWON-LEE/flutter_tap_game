@@ -51,6 +51,9 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
+
+//        testInstrumentationRunner "androidx.text.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -60,7 +63,23 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    buildscript {
+        repositories {
+            google()
+            mavenCentral()
+        }
+    }
+
+    allprojects {
+        repositories {
+            google()
+            mavenCentral()
+        }
+    }
 }
+
+
 
 flutter {
     source '../..'
@@ -68,4 +87,6 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'com.google.android.gms:play-services-ads:21.4.0'
 }
