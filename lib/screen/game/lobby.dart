@@ -86,6 +86,7 @@ class _LobbyState extends State<Lobby> {
         var sec = userArray['rc_record']! ~/ 100;
         var hundredth = '${userArray['rc_record'] % 100}'.padLeft(2, '0');
         myRecord = '${sec}.${hundredth}';
+        print('myRecord ${userArray['rc_record']}');
       }
     } catch (e) {
       await dio.post("/api/register/level1", data: {"mem_userId": mem_userId});
@@ -113,18 +114,12 @@ class _LobbyState extends State<Lobby> {
       if (res2 != []) {
         var data = res2.data;
         var totalRank = data;
-        // print('totalRank ${data.length}');
-        // print('rcData1 ${rcData![0]}');
-        // res2.data;
+
         for (int i = 0; i < data.length; i++) {
-          // print('rcData3 ${rcData![0]}');
-          rcData![i] = data[0];
-          // print('rcData4 ${rcData}');
-          // print('rcData i ${i}');
+          rcData![i] = data![i];
         }
 
-        // print('rcData2 ${rcData![0]}');
-
+        print('rcData ${data![1]}');
         print('rankNum ${rankNum}');
       }
       // print('record total rank ${rcData[1].values.toList()[0]}');
@@ -249,6 +244,7 @@ class _LobbyState extends State<Lobby> {
 
       if (res.statusCode == 200) {
         _showMyDialog("회원탈퇴");
+        final GoogleSignInAccount? googleUser = await GoogleSignIn().signOut();
       }
     } catch (e) {
       _showMyDialog("!회원탈퇴");
@@ -282,6 +278,16 @@ class _LobbyState extends State<Lobby> {
     return Scaffold(
       body: Column(
         children: [
+          AppBar(
+            centerTitle: true,
+            title: Text("TapGame"),
+            // leading: IconButton(
+            //   icon: Icon(Icons.menu),
+            //   onPressed: () {
+            //
+            //   },
+            // ),
+          ),
           Admob(),
           Expanded(
             child: Container(
@@ -411,7 +417,7 @@ class _LobbyState extends State<Lobby> {
                                     ),
                                   ),
                                   Text(
-                                    '"${nick}" 님의 현재 순위 ${myRank['count(*)'] == null ? 0 : (myRank['count(*)'] + 1)} 위',
+                                    '"${nick}" 님의 현재 순위 ${myRecord == '0.00' ? 0 : (myRank['count(*)'] + 1)} 위',
                                     style: TextStyle(fontSize: 25.0),
                                   ),
                                 ],
@@ -466,61 +472,69 @@ class _LobbyState extends State<Lobby> {
                           )),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 15.0),
-                    child: Container(
-                      width: 130,
-                      child: ElevatedButton.icon(
-                          onPressed: () {
-                            getLogoutHttp();
-                            Navigator.pushNamed(context, '/');
-                          },
-                          icon: Image.asset(
-                            'asset/img/google.png',
-                            width: 20,
-                            height: 20,
-                            fit: BoxFit.fill,
-                          ),
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors
-                                  .blueGrey //elevated btton background color
-                              ),
-                          label: Text(
-                            '로그아웃',
-                            style: TextStyle(fontSize: 20, color: Colors.white),
-                          )),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: Container(
-                      width: 130,
-                      child: ElevatedButton.icon(
-                          onPressed: () {
-                            _checkWithDrawal();
-                            // Navigator.pushNamed(context, '/lobby');
-                          },
-                          icon: Image.asset(
-                            'asset/img/google.png',
-                            width: 20,
-                            height: 20,
-                            fit: BoxFit.fill,
-                          ),
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors
-                                  .blueGrey //elevated btton background color
-                              ),
-                          label: Text(
-                            '회원탈퇴',
-                            style: TextStyle(fontSize: 20, color: Colors.white),
-                          )),
-                    ),
-                  ),
                 ],
               ),
             ),
           ),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          // padding: EdgeInsets.zero,
+          children: [
+
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0, bottom: 10.0),
+              child: Container(
+                width: 130,
+                child: ElevatedButton.icon(
+                    onPressed: () {
+                      getLogoutHttp();
+                      Navigator.pushNamed(context, '/');
+                    },
+                    icon: Image.asset(
+                      'asset/img/google.png',
+                      width: 20,
+                      height: 20,
+                      fit: BoxFit.fill,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        primary:
+                            Colors.blueGrey //elevated btton background color
+                        ),
+                    label: Text(
+                      '로그아웃',
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    )),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: Container(
+                width: 130,
+                child: ElevatedButton.icon(
+                    onPressed: () {
+                      _checkWithDrawal();
+                      // Navigator.pushNamed(context, '/lobby');
+                    },
+                    icon: Image.asset(
+                      'asset/img/google.png',
+                      width: 20,
+                      height: 20,
+                      fit: BoxFit.fill,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                        primary: Colors
+                            .blueGrey //elevated btton background color
+                    ),
+                    label: Text(
+                      '회원탈퇴',
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    )),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
