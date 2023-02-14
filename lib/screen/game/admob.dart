@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-const Map<String, String> UNIT_ID = kReleaseMode
+String ios_key = dotenv.env['IOS_ADMOB']!;
+String android_key = dotenv.env['ANDROID_ADMOB']!;
+
+final Map<String, String> UNIT_ID = kReleaseMode
     ? {
-  'ios': 'ca-app-pub-1752739692981009/2515782859',
-  'android': 'ca-app-pub-1752739692981009/2515782859',
+  'ios': ios_key,
+  'android': android_key,
 }
     : {
   'ios': 'ca-app-pub-3940256099942544/2934735716',
@@ -41,7 +45,7 @@ class Admob extends StatelessWidget {
         Stack(
           children:[ Container(
             width: MediaQuery.of(context).size.width,
-            height: 130,
+            height: 110,
             child: AdWidget(
               ad: banner,
             ),
